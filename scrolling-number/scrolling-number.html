@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset=utf-8>
+        <title>scrolling numbers</title>
+    </head>  
+    
+<body>
+    <input id="text" type="text" placeHolder="67093.145">
+    <input id="run" type="submit" value="go">
+    <div id="xbb"></div>
+
+    <script>
+
+    var container = document.getElementById('xbb');
+    scrollNum(container,"67093.145");
+
+    document.getElementById('run').addEventListener('click',function(){
+        var text = document.getElementById('text').value;
+        scrollNum(container,text);
+    })
+
+    /**
+     * scroll a number string and stops at the exact integer(>-1,<10) one by one
+     *
+     * @param {HTMLDomElement} container    contaner to show scrolling numbers
+     * @param {String} text    the number string
+     * @param {number} speed    the speed to scroll
+     * @api public
+     */
+    function scrollNum(container,text, speed){
+        container.innerHTML = "";
+        var speed = speed || 20;
+        for(var i = 0, len = text.length; i < len; ++i){
+            a(text[i],i+2);
+        }
+
+        /**
+         * scroll a integer(>-1,<10) form 0 to 9 for a number of 
+         * times(define by param time), and finally stop at the 
+         * exact number(define by num)
+         *
+         * @param {String} num    exact number when stops;
+         * @param {number} time    number of times to scroll from 0 to 9;
+         * @api private
+         */
+        function a(num,time){
+            var t = document.createElement('span');
+            container.appendChild(t);
+            if(isNaN(+num)){
+                t.innerHTML = num;
+                return;
+            }
+            num = +num;
+            var i = Math.floor(Math.random()*10);  //starts from random integer
+            var count = 0;
+
+            run();
+
+            /**
+             * main animation function
+             *
+             * @api private
+             */
+            function run(){
+                if(i == num+1 && num != 0 && count == time){
+                    return;
+                }
+                if(i == 10 && num == 0 && count == time){
+                    t.innerHTML = 0;
+                    return;
+                }
+                if(i == 10 && count != time){
+                    count++;
+                    i = 0;
+                }
+                t.innerHTML = i++;
+                requestAnimationFrame(run,speed);
+            }
+        }
+    }
+   </script>
+</body>  
+</html>
